@@ -3,7 +3,7 @@
 
 use std::collections::HashMap;
 
-use cosmic::widget;
+use lingmo::widget;
 
 use crate::app_id::AppId;
 use crate::fl;
