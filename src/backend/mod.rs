@@ -1,4 +1,4 @@
-use lingmo::widget;
+use cosmic::widget;
 use futures::StreamExt;
 use std::{
     collections::{BTreeMap, HashMap},

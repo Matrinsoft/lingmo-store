@@ -1,4 +1,4 @@
-use lingmo::iced::keyboard::{Key, Modifiers};
+use cosmic::iced::keyboard::{Key, Modifiers};
 use std::{collections::HashMap, fmt};
 
 use crate::Action;

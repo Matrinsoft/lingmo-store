@@ -1,4 +1,4 @@
-use lingmo::widget;
+use cosmic::widget;
 use std::{collections::HashMap, error::Error, fmt::Write, fs, sync::Arc};
 
 use super::{Backend, Package};

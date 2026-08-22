@@ -1,4 +1,4 @@
-use lingmo::widget;
+use cosmic::widget;
 use packagekit_zbus::{
     package_kit::PackageKitProxyBlocking,
     transaction::TransactionProxyBlocking,

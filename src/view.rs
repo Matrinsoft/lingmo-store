@@ -4,7 +4,7 @@
 use std::cmp;
 use std::sync::Arc;
 
-use lingmo::{
+use cosmic::{
     Apply, Element, cosmic_theme,
     iced::{Alignment, Length, Size},
     theme, widget,

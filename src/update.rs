@@ -6,7 +6,7 @@ use std::env;
 use std::process;
 use std::time::Instant;
 
-use lingmo::{
+use cosmic::{
     action,
     app::Task,
     iced::{
@@ -18,7 +18,7 @@ use lingmo::{
 };
 
 #[cfg(feature = "wayland")]
-use lingmo::cosmic_config::CosmicConfigEntry;
+use cosmic::cosmic_config::CosmicConfigEntry;
 #[cfg(feature = "wayland")]
 use cosmic_panel_config::CosmicPanelConfig;
 use rayon::slice::ParallelSliceMut;
@@ -282,11 +282,11 @@ impl App {
                 // Delay `App::update_apps` task to allow backends to catch up.
                 if !self.update_apps_scheduled {
                     self.update_apps_scheduled = true;
-                    return lingmo::Task::future(tokio::time::sleep(
+                    return cosmic::Task::future(tokio::time::sleep(
                         std::time::Duration::from_millis(300),
                     ))
                     .discard()
-                    .chain(lingmo::Task::done(action::app(Message::AppsUpdatedStart)));
+                    .chain(cosmic::Task::done(action::app(Message::AppsUpdatedStart)));
                 }
             }
             Message::AppsUpdated(apps, category_index) => {
@@ -508,7 +508,7 @@ impl App {
                     #[cfg(feature = "xdg-portal")]
                     return Task::perform(
                         async move {
-                            use lingmo::dialog::file_chooser::{self, FileFilter};
+                            use cosmic::dialog::file_chooser::{self, FileFilter};
                             let error_dialog = |err| {
                                 action::app(Message::DialogPage(DialogPage::RepositoryAddError(
                                     err,
@@ -1010,7 +1010,7 @@ impl App {
                 {
                     let exec = panel_info.1;
                     tokio::task::spawn(async move {
-                        lingmo::desktop::spawn_desktop_exec(
+                        cosmic::desktop::spawn_desktop_exec(
                             &exec,
                             Vec::<(&str, &str)>::new(),
                             Some("com.system76.CosmicSettings"),

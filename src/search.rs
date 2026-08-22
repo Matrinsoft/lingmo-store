@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Instant;
 
-use lingmo::{
+use cosmic::{
     Element, cosmic_theme,
     iced::{Alignment, Length},
     theme, widget,

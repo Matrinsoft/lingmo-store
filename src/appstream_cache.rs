@@ -7,7 +7,7 @@ use appstream::{
     url::Url,
     xmltree,
 };
-use lingmo::widget;
+use cosmic::widget;
 use flate2::read::GzDecoder;
 use rayon::prelude::*;
 use serde::Deserialize;

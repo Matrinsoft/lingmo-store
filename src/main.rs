@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 use clap::Parser;
-use lingmo::{
+use cosmic::{
     Application, ApplicationExt, Element, action,
     app::{Core, CosmicFlags, Settings, Task, context_drawer},
     cosmic_config::{self, CosmicConfigEntry},
@@ -163,13 +163,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             selected: BTreeSet::new(),
             installing: false,
         };
-        lingmo::app::run::<App>(settings, flags)?;
+        cosmic::app::run::<App>(settings, flags)?;
     } else {
         #[cfg(feature = "single-instance")]
-        lingmo::app::run_single_instance::<App>(settings, flags)?;
+        cosmic::app::run_single_instance::<App>(settings, flags)?;
 
         #[cfg(not(feature = "single-instance"))]
-        lingmo::app::run::<App>(settings, flags)?;
+        cosmic::app::run::<App>(settings, flags)?;
     }
 
     Ok(())
@@ -352,7 +352,7 @@ pub enum Message {
     Updates((BackendName, Vec<(BackendName, Package)>)),
     WindowClose,
     WindowNew,
-    SelectPlacement(lingmo::widget::segmented_button::Entity),
+    SelectPlacement(cosmic::widget::segmented_button::Entity),
     PlaceApplet(AppId),
 }
 
@@ -455,13 +455,13 @@ pub struct App {
     pub category_results: Option<(&'static [Category], Vec<SearchResult>)>,
     pub category_load_start: Option<Instant>,
     pub explore_results: HashMap<ExplorePage, Vec<SearchResult>>,
-    pub explore_results_handle: Option<(Arc<atomic::AtomicBool>, lingmo::iced::task::Handle)>,
+    pub explore_results_handle: Option<(Arc<atomic::AtomicBool>, cosmic::iced::task::Handle)>,
     pub installed_results: Option<Vec<SearchResult>>,
     pub search_results: Option<(String, Vec<SearchResult>)>,
     pub selected_opt: Option<Selected>,
-    pub applet_placement_buttons: lingmo::widget::segmented_button::SingleSelectModel,
+    pub applet_placement_buttons: cosmic::widget::segmented_button::SingleSelectModel,
     pub pending_backend_updates:
-        HashMap<BackendName, (Arc<atomic::AtomicBool>, lingmo::iced::task::Handle)>,
+        HashMap<BackendName, (Arc<atomic::AtomicBool>, cosmic::iced::task::Handle)>,
     pub fetching_backends: bool,
     pub update_apps_in_progress: bool,
     /// Prevents multiple instances of `App::update_apps()` tasks
@@ -522,7 +522,7 @@ impl App {
                                 .enable_io()
                                 .build()
                                 .unwrap()
-                                .block_on(lingmo::desktop::spawn_desktop_exec(
+                                .block_on(cosmic::desktop::spawn_desktop_exec(
                                     &exec,
                                     envs,
                                     Some(&appid),
@@ -1167,7 +1167,7 @@ impl App {
         let backend_updates = backend::backends(&locale, refresh)
             .map(|(name, backend)| Message::BackendUpdate(name, backend));
 
-        lingmo::task::stream(
+        cosmic::task::stream(
             futures::stream::once(async { Message::BackendUpdateStart })
                 .chain(backend_updates)
                 .chain(futures::stream::once(async {
@@ -1177,7 +1177,7 @@ impl App {
     }
 
     fn update_config(&mut self) -> Task<Message> {
-        lingmo::command::set_theme(self.config.app_theme.theme())
+        cosmic::command::set_theme(self.config.app_theme.theme())
     }
 
     fn is_installed_inner(
@@ -2027,7 +2027,7 @@ impl Application for App {
         // Build buttons for applet placement dialog
 
         let mut applet_placement_buttons =
-            lingmo::widget::segmented_button::SingleSelectModel::builder().build();
+            cosmic::widget::segmented_button::SingleSelectModel::builder().build();
         let _ = applet_placement_buttons.insert().text(fl!("panel")).id();
         let _ = applet_placement_buttons.insert().text(fl!("dock")).id();
         applet_placement_buttons.activate_position(0);
@@ -2117,7 +2117,7 @@ impl Application for App {
     }
 
     #[cfg(feature = "single-instance")]
-    fn dbus_activation(&mut self, msg: lingmo::dbus_activation::Message) -> Task<Message> {
+    fn dbus_activation(&mut self, msg: cosmic::dbus_activation::Message) -> Task<Message> {
         let mut tasks = Vec::with_capacity(2);
         if self.core.main_window_id().is_none() {
             // Create window if required
@@ -2130,7 +2130,7 @@ impl Application for App {
             self.core.set_main_window_id(Some(window_id));
             tasks.push(task.map(|_id| action::none()));
         }
-        if let lingmo::dbus_activation::Details::ActivateAction { action, .. } = msg.msg {
+        if let cosmic::dbus_activation::Details::ActivateAction { action, .. } = msg.msg {
             // Search for term
             self.search_active = true;
             self.search_input = action;
@@ -2325,7 +2325,7 @@ impl Application for App {
                 .title(fl!("place-applet"))
                 .body(fl!("place-applet-desc"))
                 .control(
-                    lingmo::widget::segmented_control::horizontal(&self.applet_placement_buttons)
+                    cosmic::widget::segmented_control::horizontal(&self.applet_placement_buttons)
                         .on_activate(Message::SelectPlacement)
                         .minimum_button_width(0),
                 )
@@ -2462,7 +2462,7 @@ impl Application for App {
                     || !self.waiting_installed.is_empty()
                     || !self.waiting_updates.is_empty()
                 {
-                    widgets.push(lingmo::widget::indeterminate_circular().size(20.0).into());
+                    widgets.push(cosmic::widget::indeterminate_circular().size(20.0).into());
                 }
 
                 widgets.push(manage_repositories.into());
@@ -2619,7 +2619,7 @@ impl Application for App {
         };
 
         // Uncomment to debug layout:
-        //content.explain(lingmo::iced::Color::WHITE)
+        //content.explain(cosmic::iced::Color::WHITE)
         content
     }
 
@@ -2678,7 +2678,7 @@ impl Application for App {
             let duration =
                 std::time::Duration::from_secs(self.config.update_check_interval_minutes * 60);
             subscriptions
-                .push(lingmo::iced::time::every(duration).map(|_| Message::PeriodicUpdateCheck));
+                .push(cosmic::iced::time::every(duration).map(|_| Message::PeriodicUpdateCheck));
         }
 
         if !self.pending_operations.is_empty() {
@@ -2906,9 +2906,9 @@ impl Application for App {
 
 /// Aborts a previous Task and sets cancel state if an existing task was found.
 pub fn abortable_task(
-    handle: &mut Option<(Arc<atomic::AtomicBool>, lingmo::iced::task::Handle)>,
-    task: impl FnOnce(Arc<atomic::AtomicBool>) -> lingmo::app::Task<Message>,
-) -> lingmo::app::Task<Message> {
+    handle: &mut Option<(Arc<atomic::AtomicBool>, cosmic::iced::task::Handle)>,
+    task: impl FnOnce(Arc<atomic::AtomicBool>) -> cosmic::app::Task<Message>,
+) -> cosmic::app::Task<Message> {
     let cancel = Arc::new(atomic::AtomicBool::new(false));
     let (task, task_handle) = task(cancel.clone()).abortable();
 
@@ -2923,9 +2923,9 @@ pub fn abortable_task(
 
 /// Spawn a blocking function with an atomic bool for tracking cancellation requests.
 pub fn abortable_blocking_task(
-    handle: &mut Option<(Arc<atomic::AtomicBool>, lingmo::iced::task::Handle)>,
+    handle: &mut Option<(Arc<atomic::AtomicBool>, cosmic::iced::task::Handle)>,
     func: impl FnOnce(Arc<atomic::AtomicBool>) -> Option<Message> + Send + 'static,
-) -> lingmo::app::Task<Message> {
+) -> cosmic::app::Task<Message> {
     abortable_task(handle, |canceller| {
         Task::future(async move {
             let (tx, rx) = tokio::sync::oneshot::channel();
@@ -2933,8 +2933,8 @@ pub fn abortable_blocking_task(
             tokio::task::spawn_blocking(move || _ = tx.send(func(canceller)));
 
             match rx.await {
-                Ok(Some(message)) => lingmo::action::app(message),
-                _ => lingmo::action::none(),
+                Ok(Some(message)) => cosmic::action::app(message),
+                _ => cosmic::action::none(),
             }
         })
     })

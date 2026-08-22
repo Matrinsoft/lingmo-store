@@ -1,4 +1,4 @@
-use lingmo::widget;
+use cosmic::widget;
 use futures::StreamExt;
 use libflatpak::{Installation, Ref, Remote, Transaction, gio::Cancellable, glib, prelude::*};
 use std::{
