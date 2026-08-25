@@ -1,5 +1,5 @@
 name := 'cosmic-store'
-export APPID := 'com.system76.CosmicStore'
+export APPID := 'com.lingmoos.LingmoStore'
 
 rootdir := ''
 prefix := '/usr'
