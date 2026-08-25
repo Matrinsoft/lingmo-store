@@ -710,7 +710,7 @@ impl App {
             async move {
                 tokio::task::spawn_blocking(move || {
                     let start = Instant::now();
-                    let applet_provide = AppProvide::Id("com.system76.CosmicApplet".to_string());
+                    let applet_provide = AppProvide::Id("com.lingmoos.LingmoApplet".to_string());
                     let results =
                         Self::generic_search(&apps, &backends, |_id, info, _installed| {
                             if !matches!(info.kind, AppKind::DesktopApplication) {
@@ -772,7 +772,7 @@ impl App {
                 })
             }
             ExplorePage::MadeForCosmic => {
-                let provide = AppProvide::Id("com.system76.CosmicApplication".to_string());
+                let provide = AppProvide::Id("com.lingmoos.LingmoApplication".to_string());
                 Self::generic_search(apps, backends, |_id, info, _installed| {
                     if !matches!(info.kind, AppKind::DesktopApplication) {
                         return None;
@@ -1991,7 +1991,7 @@ impl Application for App {
     type Message = Message;
 
     /// The unique application ID to supply to the window manager.
-    const APP_ID: &'static str = "com.system76.CosmicStore";
+    const APP_ID: &'static str = "com.lingmoos.LingmoStore";
 
     fn core(&self) -> &Core {
         &self.core

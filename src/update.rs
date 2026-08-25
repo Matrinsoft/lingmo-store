@@ -648,7 +648,7 @@ impl App {
                                 {
                                     // Use the dialog ID to make it float
                                     settings.platform_specific.application_id =
-                                        "com.system76.CosmicStoreDialog".to_string();
+                                        "com.lingmoos.LingmoStoreDialog".to_string();
                                 }
 
                                 let (window_id, task) = window::open(settings);
@@ -1013,7 +1013,7 @@ impl App {
                         cosmic::desktop::spawn_desktop_exec(
                             &exec,
                             Vec::<(&str, &str)>::new(),
-                            Some("com.system76.CosmicSettings"),
+                            Some("com.lingmoos.LingmoSettings"),
                             false,
                         )
                         .await;
