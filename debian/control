@@ -17,7 +17,7 @@ Homepage: https://github.com/Matrinsoft/lingmo-store
 Package: lingmo-store
 Architecture: amd64 arm64
 Depends:
-    appstream-data-pop,
+    appstream-data-lingmo,
     apt-config-icons,
     apt-config-icons-hidpi,
     apt-config-icons-large,
